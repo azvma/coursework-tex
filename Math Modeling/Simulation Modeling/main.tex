@@ -1,0 +1,276 @@
+\documentclass[legalpaper,11pt,extrafontsizes,oneside,openany,x11names]{memoir}
+
+\usepackage{geometry}
+\geometry{portrait,left=1in,right=1in,top=1in,bottom=1in}
+
+\usepackage{amsmath,booktabs}
+\usepackage{graphicx,caption}
+\usepackage{enumitem,multicol}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{listings,xcolor}
+
+\definecolor{codegray}{rgb}{0.9,0.9,0.9}
+
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+    language=Matlab
+}
+
+\setlength{\itemsep}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+
+\titlespacing*{\section}{0pt}{1.5ex plus .2ex minus .2ex}{1ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .2ex minus .2ex}{0.5ex plus .2ex}
+\titlespacing*{\subsubsection}{0pt}{1.5ex plus .2ex minus .2ex}{0.5ex plus .2ex}
+
+\setlength{\columnsep}{20pt}
+
+\fancypagestyle{plain}{
+    \fancyhead[L]{\sffamily \textbf{LAKI, Tamira Marie A.}}
+    \fancyhead[C]{\sffamily \textbf{Math Modeling (MAT305)}}
+    \fancyhead[R]{\sffamily \textbf{BSM CS 3A-G2}}
+    \fancyfoot[C]{\thepage}
+}
+
+\parindent0in
+\pagestyle{plain}
+\thispagestyle{plain}
+
+\makeatletter
+\def\maketitle{
+    \begin{center}
+        \LARGE \textbf{\@title} \\[0.5ex]
+        \large \@date
+    \end{center}
+}
+\makeatother
+
+\title{Simulation Modeling}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{Activity: Simulating Deterministic Behavior}
+
+\begin{enumerate}
+    \item Use Monte Carlo simulation to approximate the area under the curve \( y = \sqrt{x} \), over the interval \( \frac{1}{2} \leq x \leq \frac{3}{2} \). Give the actual area using the definite integral.
+
+     \textbf{MATLAB Code:}
+    \begin{lstlisting}
+a = 0.5;
+b = 1.5;
+fmax = sqrt(b);
+total_points = 100000;
+
+x_rand = a + (b - a) * rand(1, N);     
+y_rand = fmax * rand(1, N);            
+
+under_curve = y_rand <= sqrt(x_rand);
+approx_area = sum(under_curve) / total_points * (b - a) * fmax;
+
+actual_area = (2/3) * ((b)^(3/2) - (a)^(3/2));
+
+fprintf(actual_area);
+    \end{lstlisting}
+
+    \textbf{Output:}
+
+    \begin{lstlisting}
+0.98904
+    \end{lstlisting}
+
+
+\textbf{Solution:}
+\begin{align*}
+\text{A} 
+&= \int_{1/2}^{3/2} \sqrt{x} \, dx = \left. \frac{2}{3} x^{3/2} \right|_{1/2}^{3/2} \\
+&= \frac{2}{3} \left( \left( \frac{3}{2} \right)^{3/2} - \left( \frac{1}{2} \right)^{3/2} \right) \\
+&= \frac{2}{3} (1.8371 - 0.3536) \\
+&= \frac{2}{3} (1.4835) \approx 0.9890
+\end{align*}
+
+As shown in the MATLAB simulation and in the step-by-step solution, the actual area is approximately \boxed{0.9890}
+
+    
+    \item Use Monte Carlo simulation. Write an algorithm to calculate the part of the volume of an ellipsoid 
+    \[
+    \frac{x^2}{2} + \frac{y^2}{4} + \frac{z^2}{8} \leq 16
+    \]
+    that lies in the first octant, \( x > 0, y > 0, z > 0 \).
+
+    \textbf{MATLAB Code:}
+    \begin{lstlisting}
+x_max = sqrt(32);
+y_max = sqrt(64);
+z_max = sqrt(128);
+total_points = 100000;
+
+x = x_max * rand(1, total_points);
+y = y_max * rand(1, total_points);
+z = z_max * rand(1, total_points);
+
+inside = (x.^2)/2 + (y.^2)/4 + (z.^2)/8 <= 16;
+
+box_volume = x_max * y_max * z_max;
+volume = (sum(inside) / total_points) * box_volume;
+
+fprintf(volume);
+    \end{lstlisting}
+
+    \textbf{Output:}
+    \begin{lstlisting}
+268.07808
+    \end{lstlisting}
+
+\textbf{Solution:}
+    \begin{align*}
+V 
+&= \frac{1}{8} \cdot \frac{4}{3} \pi \cdot \sqrt{32} \cdot \sqrt{64} \cdot \sqrt{128} \\
+&= \frac{1}{8} \cdot \frac{4}{3} \pi \cdot (2^{2.5}) (2^3) (2^{3.5}) \\
+&= \frac{1}{8} \cdot \frac{4}{3} \pi \cdot 2^9 \\
+&= \frac{1}{8} \cdot \frac{2048}{3} \pi \\
+&= \frac{256}{3} \pi \\
+&\approx 268.08
+\end{align*}
+
+The calculated part of the volume of the ellipsoid is approximately \boxed{268.08}, using MATLAB simulation and the step-by-step solution as the reference.
+
+    
+\end{enumerate}
+
+\section*{Activity: Generating Random Numbers}
+
+\begin{enumerate}
+    \item Use middle square method to generate 10 random numbers using \( x = 1009 \). \\
+\textbf{MATLAB Code:}
+\begin{lstlisting}
+x = 1009;
+total_points = 10;
+
+fprintf(' i     x_i   x_i^2\n');
+fprintf('-------------------\n');
+
+for i = 0:total_points
+    x_sq_str = sprintf('%08d', x^2); 
+    mid = floor((length(x_sq_str) - 4) / 2) + 1;
+    middle_digits = x_sq_str(mid:mid+3); 
+    
+    fprintf('%2d  %5d   %s\n', i, x, middle_digits);
+    x = str2double(middle_digits);
+end
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}
+ i     x_i   x_i^2
+-------------------
+ 0   1009   1808
+ 1    180   0324
+ 2    324   1049
+ 3   1049   1004
+ 4   1004   0080
+ 5     80   0064
+ 6     64   0040
+ 7     40   0016
+ 8     16   0002
+ 9      2   0000
+10      0   0000
+\end{lstlisting}
+
+\textbf{Solution:}
+\begin{align*}
+x_0 &= 1009 \\
+x_0^2 &= 1018081 \Rightarrow 01018081 \Rightarrow x_1 = 0180 \\
+x_1^2 &= 32400 \Rightarrow 00032400 \Rightarrow x_2 = 0324 \\
+x_2^2 &= 104976 \Rightarrow 00104976 \Rightarrow x_3 = 1049 \\
+x_3^2 &= 1100401 \Rightarrow 01100401 \Rightarrow x_4 = 1004 \\
+x_4^2 &= 1008016 \Rightarrow 01008016 \Rightarrow x_5 = 0080 \\
+x_5^2 &= 6400 \Rightarrow 00006400 \Rightarrow x_6 = 0064 \\
+x_6^2 &= 4096 \Rightarrow 00004096 \Rightarrow x_7 = 0040 \\
+x_7^2 &= 1600 \Rightarrow 00001600 \Rightarrow x_8 = 0016 \\
+x_8^2 &= 256 \Rightarrow 00000256 \Rightarrow x_9 = 0002 \\
+x_9^2 &= 4 \Rightarrow 00000004 \Rightarrow x_{10} = 0000 \\
+\end{align*}
+
+\newpage
+
+    \item Use the linear congruence method to generate 20 random numbers using \( a = 5 \), \( b = 3 \), and \( c = 16 \). Was there cycling? If so, when did it occur?
+
+    \textbf{Solution:}
+\begin{align*}
+x_0 & = 1 \\
+x_1 & = (5 \cdot 1 + 3) \bmod 16 = 8 \\
+x_2 & = (5 \cdot 8 + 3) \bmod 16 = 11 \\
+x_3 & = (5 \cdot 11 + 3) \bmod 16 = 10 \\
+x_4 & = (5 \cdot 10 + 3) \bmod 16 = 5 \\
+x_5 & = (5 \cdot 5 + 3) \bmod 16 = 12 \\
+x_6 & = (5 \cdot 12 + 3) \bmod 16 = 15 \\
+x_7 & = (5 \cdot 15 + 3) \bmod 16 = 14 \\
+x_8 & = (5 \cdot 14 + 3) \bmod 16 = 9 \\
+x_9 & = (5 \cdot 9 + 3) \bmod 16 = 0 \\
+x_{10} & = (5 \cdot 0 + 3) \bmod 16 = 3 \\
+x_{11} & = (5 \cdot 3 + 3) \bmod 16 = 2 \\
+x_{12} & = (5 \cdot 2 + 3) \bmod 16 = 13 \\
+x_{13} & = (5 \cdot 13 + 3) \bmod 16 = 4 \\
+x_{14} & = (5 \cdot 4 + 3) \bmod 16 = 7 \\
+x_{15} & = (5 \cdot 7 + 3) \bmod 16 = 6 \\
+x_{16} & = \boxed{(5 \cdot 6 + 3) \bmod 16 = 1}
+\end{align*}
+
+\textbf{Yes, and the cycle starts at $x_{16}$}, which repeats the initial value.
+
+
+\end{enumerate}
+
+\section*{Activity: Simulating Probabilistic Behavior}
+\begin{enumerate}
+    \item You arrive at the beach for a vacation and are dismayed to learn that PAGASA is predicting 50\% chance of rain every day. Using Monte Carlo simulation, predict the chance that it rains three consecutive days during your vacation.
+
+
+
+\textbf{MATLAB Code:}
+\begin{lstlisting}
+total_points = 100000;
+count = 0;
+
+for i = 1: total_points
+    day1 = rand < 0.5;
+    day2 = rand < 0.5;
+    day3 = rand < 0.5;
+
+    if day1 && day2 && day3
+        count = count + 1;
+    end
+end
+
+prob = count / total_points;
+fprintf(total_points, prob, prob * 100);
+\end{lstlisting}
+
+\textbf{Output:}
+
+\begin{lstlisting}
+0.1249 (12.49%)
+\end{lstlisting}
+
+\textbf{Solution:}
+\begin{align*}
+P(\text{rain each day}) 
+&= P(\text{rain on day 1}) \cdot P(\text{rain on day 2}) \cdot P(\text{rain on day 3}) \\
+&= 0.5 \cdot 0.5 \cdot 0.5 = \boxed{0.125}
+\end{align*}
+
+As displayed in the MATLAB simulation and step-by-step solution for the probability, there is approximately \boxed{$12.50\%$} chance that it rains for 3 consecutive days during my vacation.
+\end{enumerate}
+
+\end{document}

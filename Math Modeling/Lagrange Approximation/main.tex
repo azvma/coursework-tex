@@ -1,0 +1,154 @@
+\documentclass[legalpaper,11pt,extrafontsizes,oneside,openany,x11names]{memoir}
+
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{enumitem}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\usepackage{listings}
+\usepackage{soul}
+
+\usepackage[
+    pdftitle={Lagrange-Interpolation-1},
+    pdfauthor={Tamira Laki},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+
+\definecolor{codegray}{rgb}{0.9,0.9,0.9}
+
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+    language=Matlab
+}
+
+\setlength{\itemsep}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+
+\titlespacing*{\section}{0pt}{1.5ex plus .2ex minus .2ex}{1ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .2ex minus .2ex}{0.5ex plus .2ex}
+\titlespacing*{\subsubsection}{0pt}{1.5ex plus .2ex minus .2ex}{0.5ex plus .2ex}
+
+\geometry{portrait,left=1in,right=1in,top=1in,bottom=1in}
+\setlength{\columnsep}{20pt}
+
+\fancypagestyle{plain}{
+    \fancyhead[L]{\sffamily \textbf{LAKI, Tamira Marie A.}} 
+    \fancyhead[C]{\sffamily \textbf{Math Modeling (MAT305)}}
+    \fancyhead[R]{\sffamily \textbf{BSM CS 3A-G2}}
+    \fancyfoot[C]{\thepage}
+}
+
+\parindent0in
+\pagestyle{plain}
+\thispagestyle{plain}
+
+\makeatletter
+\def\maketitle{
+    \begin{center}
+        \LARGE \textbf{\@title} \\[0.5ex]
+        \large \@date
+    \end{center}
+}
+\makeatother
+
+\title{Activity - Lagrange Polynomial Approximation}
+\date{May 3, 2025}
+
+\setcounter{section}{0}
+\renewcommand{\thesection}{\arabic{section}}
+
+\begin{document}
+\maketitle
+
+\section*{Problem}
+
+\subsection*{Given Values (Using Calculator)}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+$x$ & $\tan(x)$ & $\log_{10}(\tan(x))$ \\
+\hline
+1.00 & 1.5574 & 0.1924 \\
+1.05 & 1.7415 & 0.2414 \\
+1.10 & 1.9640 & 0.2933 \\
+1.15 & 2.2945 & 0.3492 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Formula}
+
+\[
+P(x) = \sum_{i=0}^{3} f(x_i) \cdot L_i(x), \quad P_3(x) = \sum_{i=0}^{3} y_i \cdot L_i(x)
+\]
+
+\subsection*{Lagrange Basis Polynomials}
+
+\[
+L_0(x) = \frac{(x - 1.05)(x - 1.10)(x - 1.15)}{(1.00 - 1.05)(1.00 - 1.10)(1.00 - 1.15)} = \frac{(x - 2.15x + 1.155)(x - 1.15)}{0.00075}
+\]
+
+\[
+= -1,333.33(x^3 - 3.3x^2 + 3.6275x - 1.32825) 
+\]
+
+\[
+L_1(x) = \frac{(x - 1.00)(x - 1.10)(x - 1.15)}{(1.05 - 1.00)(1.05 - 1.10)(1.05 - 1.15)} = \frac{(x^2 - 2.1x + 1.15)(x - 1.15)}{0.000125}
+\]
+
+\[
+= 4000(x^3 - 3.25x^2 + 3.515x - 1.265)
+\]
+
+\[
+L_2(x) = \frac{(x - 1.00)(x - 1.05)(x - 1.15)}{(1.10 - 1.00)(1.10 - 1.05)(1.10 - 1.15)} = \frac{(x^2 - 2.05x + 1.05)(x - 1.15)}{0.00025}
+\]
+
+\[
+= -4000(x^3 - 3.2x^2 + 3.4075x - 1.2075)
+\]
+
+\[
+L_3(x) = \frac{(x - 1.00)(x - 1.05)(x - 1.10)}{(1.15 - 1.00)(1.15 - 1.05)(1.15 - 1.10)} = \frac{(x^2 - 2.05x + 1.05)(x - 1.10)}{0.000375}
+\]
+
+\[
+= 1,333.33(x^3 - 3.15x^2 + 3.305x - 1.155) 
+\]
+
+\subsection*{Interpolated Polynomial $P(x)$}
+
+\begin{align*}
+P(x) &= [-(0.1924) \cdot (133.33)] \cdot (x^3 - 3.3x^2 + 3.6275x - 1.32825) \\
+&\quad + [0.2414 \cdot 4000] \cdot (x^3 - 3.25x^2 + 3.515x - 1.265) \\
+&\quad + [-(0.2933) \cdot (4000)] \cdot (x^3 - 3.2x^2 + 3.4075x - 1.2075) \\
+&\quad + [0.3492 \cdot 1833.33] \cdot (x^3 - 3.15x^2 + 3.305x - 1.155) \\
+\\
+P(x) &= 1.4641x^3 - 4.0384x^2 + 4.6368x - 1.8721
+\end{align*}
+
+\subsection*{Evaluation at $x = 1.09$}
+
+\begin{align*}
+P(1.09) &\approx 0.2826352729 \\
+f(1.09) &= \log_{10}(\tan(1.09)) \approx 0.2826429145 \\
+\Rightarrow P(1.09) &\approx f(1.09) \approx \boxed{0.2826}
+\end{align*}
+
+\end{document}
